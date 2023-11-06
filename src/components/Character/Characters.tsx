@@ -7,15 +7,25 @@ type CharactersData = {
   results: CharacterModel[];
 };
 
-const Characters = () => {
+interface CharactersProps {
+  name: string;
+}
+
+const Characters = ({ name }: CharactersProps) => {
   const [characters, setCharacters] = useState<ReadonlyArray<CharacterModel>>(
     []
   );
   useEffect(() => {
     axios
-      .get<CharactersData>("https://rickandmortyapi.com/api/character")
-      .then((res) => setCharacters(res.data.results ?? []));
-  }, []);
+      .get<CharactersData>(
+        "https://rickandmortyapi.com/api/character?name=" + name
+      )
+      .then((res) => setCharacters(res.data.results ?? []))
+      .catch((err) => {
+        console.error(err);
+        setCharacters([]);
+      });
+  }, [name]);
   return (
     <div className="bg-white">
       <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
